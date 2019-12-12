@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "payersapi.fullname" . }}
+  labels:
+    app: {{ template "payersapi.name" . }}
+    chart: {{ template "payersapi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "payersapi.name" . }}
+    release: {{ .Release.Name }}

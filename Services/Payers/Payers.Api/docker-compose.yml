@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+
+  web:
+    container_name: 'payersapi'
+    image: 'payersapi'
+    build:
+      context: .
+      dockerfile: aspnetcore.production.dockerfile
+    volumes:
+      - .:/app/Services/Payers/Payers.Api
+    ports:
+     - "5007:5007"
+    depends_on:
+     - "mysql"
+    networks:
+      - payersapi-network
+
+  mysql:
+    container_name: 'mysql'
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_PASSWORD: password
+    networks:
+      - payersapi-network
+
+networks:
+  payersapi-network:
+    driver: bridge
+
+

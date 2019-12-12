@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claims-server
+  labels:
+    app: claims-server
+spec:
+  selector:
+    matchLabels:
+      app: claims-server
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: claims-server
+    spec:
+      containers:
+        - image: cdepoc.azurecr.io/claimsapi:v1
+          imagePullPolicy: IfNotPresent
+          name: claims-server   

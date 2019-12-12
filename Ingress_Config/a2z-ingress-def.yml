@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: a2z-ingress-def
+  namespace: a2z-ns
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    #nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #  add_header Access-Control-Allow-Methods "POST, GET, OPTIONS";
+    #  add_header Access-Control-Allow-Credentials true;
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /product
+        backend:
+          serviceName: prodlist-service
+          servicePort: 80
+      - path: /registration
+        backend:
+          serviceName: registration-service
+          servicePort: 80
+      - path: /services
+        backend:
+          serviceName: auth-server-service
+          servicePort: 80

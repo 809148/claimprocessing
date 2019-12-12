@@ -1,0 +1,24 @@
+FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+EXPOSE 1433
+
+FROM microsoft/dotnet:2.2-sdk AS build
+WORKDIR /src
+COPY ["Services/Benefits/Benefits.Api/Benefits.Api.csproj", "Services/Benefits/Benefits.Api/"]
+COPY ["Services/Benefits/Benefits.Domain/Benefits.Domain.csproj", "Services/Benefits/Benefits.Domain/"]
+COPY ["Services/Shared/Shared.Domain/Shared.Domain.csproj", "Services/Shared/Shared.Domain/"]
+COPY ["Services/Benefits/Benefits.Infrastructure/Benefits.Infrastructure.csproj", "Services/Benefits/Benefits.Infrastructure/"]
+RUN dotnet restore "Services/Benefits/Benefits.Api/Benefits.Api.csproj"
+COPY . .
+WORKDIR "/src/Services/Benefits/Benefits.Api"
+RUN dotnet build "Benefits.Api.csproj" -c Release -o /app
+
+FROM build AS publish
+RUN dotnet publish "Benefits.Api.csproj" -c Release -o /app
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "Benefits.Api.dll"]

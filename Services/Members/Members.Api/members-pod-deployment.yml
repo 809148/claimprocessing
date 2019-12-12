@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: members-server
+  labels:
+    app: members-server
+spec:
+  selector:
+    matchLabels:
+      app: members-server
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: members-server
+    spec:
+      containers:
+        - image: cdepoc.azurecr.io/membersapi:v2.3
+          imagePullPolicy: IfNotPresent
+          name: members-server   

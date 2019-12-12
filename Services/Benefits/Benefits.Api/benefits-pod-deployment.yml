@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: benefits-server
+  labels:
+    app: benefits-server
+spec:
+  selector:
+    matchLabels:
+      app: benefits-server
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: benefits-server
+    spec:
+      containers:
+        - image: cdepoc.azurecr.io/benefitsapi:v1
+          imagePullPolicy: IfNotPresent
+          name: benefits-server   

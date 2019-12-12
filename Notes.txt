@@ -1,0 +1,32 @@
+reference url for Microsoft.EntityFrameworkCore.SqlServer
+https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.SqlServer/
+
+docker image for sql server:
+https://hub.docker.com/_/microsoft-mssql-server
+
+adding migration code:
+add-migration
+
+Updating database:
+update-database
+
+
+Fixing of sql server with entityframeworkcore issue:
+		Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 2.2.6
+		install-package Microsoft.Data.SqlClient -v:1.0.19249.1
+		install-package .NETStandard 2.1
+		uninstall-package Microsoft.EntityFrameworkCore.Relational from infrastructure project
+
+Packages to be installed:
+	1. Automapper - install-package automapper -v:9.0.0
+	2. InMemory - install-package Microsoft.EntityFrameworkCore.InMemory -v:2.2.6
+	3. Swagger - Install-Package Swashbuckle.AspNetCore -v:4.0.1
+	4. Logging - install-package Microsoft.Extensions.Logging -v:2.1.1
+	5. NLog - install-package NLog.Web.AspNetCore -v:4.6.5
+	6. AutoMapper extensions - install-package AutoMapper.Extensions.Microsoft.DependencyInjection -v:7.0.0
+	7. Members.Tests -  install-package Microsoft.EntityFrameworkCore.Relational -v:2.2.1
+	8 Members.Tests 
+	9. Automapper - install-package Autofac.Extensions.DependencyInjection -v:5.0.0
+	10. AspNetCore Razor Design - install-package Microsoft.AspNetCore.Razor.Design -v:2.1.1
+11. Asp.Mvc.Core - install-package Microsoft.AspNetCore.Mvc.Core -v:2.1.1.0	
+12. Automapper.Extensions  - install-package automapper.extensions.microsoft.dependencyinjection

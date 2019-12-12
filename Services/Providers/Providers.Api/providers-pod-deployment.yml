@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: providers-server
+  labels:
+    app: providers-server
+spec:
+  selector:
+    matchLabels:
+      app: providers-server
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: providers-server
+    spec:
+      containers:
+        - image: cdepoc.azurecr.io/providersapi:v2.0
+          imagePullPolicy: IfNotPresent
+          name: providers-server   

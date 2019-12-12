@@ -1,0 +1,32 @@
+version: '2.0'
+
+services:
+
+  web:
+    container_name: 'providersapi'
+    image: 'providersapi'
+    build:
+      context: .
+      dockerfile: Dockerfile # providersapi.development.dockerfile
+    volumes:
+      - .:/var/www/providersapi
+    ports:
+     - "5000:5000"
+    depends_on:
+     - "providersdbsrv"
+    networks:
+      - providersapi-network
+
+  providersdbsrv:
+    container_name: 'providersdbsrv'
+    image: postgres
+    environment:
+      SA_PASSWORD: admin@123
+    networks:
+      - providersapi-network
+
+networks:
+  providersapi-network:
+    driver: bridge
+
+

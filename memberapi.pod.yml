@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: member-api
+    labels:
+        app: member-api
+        rel: stable
+spec: 
+    containers:
+    - name: member-api
+      image: membersapi:dev
+      ports:
+      - containerPort: 80
+        resources:
+# kubectl create -f nginx.pod.yml --save-config
+# kubectl describe pod [pod-name]
+# kubectl apply -f nginx.pod.yml
+# kubectl exec -f [pod-name] -it sh
+# kubectl edit -f nginx.pod.yml
+# kubectl delete -f nginx.pod.yml

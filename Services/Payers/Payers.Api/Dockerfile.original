@@ -1,0 +1,35 @@
+#FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+#WORKDIR /app
+#EXPOSE 80
+#EXPOSE 443
+#
+#FROM microsoft/dotnet:2.1-sdk AS build
+#WORKDIR /src
+#COPY ["Services/Payers/Payers.Api/Payers.Api.csproj", "Services/Payers/Payers.Api/"]
+#RUN dotnet restore "Services/Payers/Payers.Api/Payers.Api.csproj"
+#COPY . .
+#WORKDIR "/src/Services/Payers/Payers.Api"
+#RUN dotnet build "Payers.Api.csproj" -c Release -o /app
+#
+#FROM build AS publish
+#RUN dotnet publish "Payers.Api.csproj" -c Release -o /app
+#
+#FROM base AS final
+#WORKDIR /app
+#COPY --from=publish /app .
+#ENTRYPOINT ["dotnet", "Payers.Api.dll"]
+
+	FROM mcr.microsoft.com/dotnet/core/sdk:2.1 AS build-env
+	WORKDIR /app
+	EXPOSE 6001
+	EXPOSE 6001
+	COPY /Services/Shared ./Services/Shared
+	COPY /Services/Payers ./Services/Payers
+	RUN dotnet publish Services/Payers/Payers.Api -c Release -o out
+
+	FROM mcr.microsoft.com/dotnet/core/aspnet:2.1
+	WORKDIR /app
+	COPY --from=build-env /app/Services/Payers/Payers.Api/out .
+
+
+	ENTRYPOINT ["dotnet", "Payers.Api.dll"]

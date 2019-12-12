@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payers-server
+  labels:
+    app: payers-server
+spec:
+  selector:
+    matchLabels:
+      app: payers-server
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: payers-server
+    spec:
+      containers:
+        - image: cdepoc.azurecr.io/payersapi:v1
+          imagePullPolicy: IfNotPresent
+          name: payers-server   

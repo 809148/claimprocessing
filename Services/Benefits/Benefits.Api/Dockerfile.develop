@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["BuildingBlocks/WebHost.Customization/WebHost.Customization.csproj", "BuildingBlocks/WebHost.Customization/"]
+COPY ["Services/Benefits/Benefits.Api/Benefits.Api.csproj", "Services/Benefits/Benefits.Api/"]
+COPY ["Services/Benefits/Benefits.Domain/Benefits.Domain.csproj", "Services/Benefits/Benefits.Domain/"]
+COPY ["Services/Benefits/Benefits.Infrastructure/Benefits.Infrastructure.csproj", "Services/Benefits/Benefits.Infrastructure/"]
+COPY ["Services/Shared/Shared.Domain/Shared.Domain.csproj", "Services/Shared/Shared.Domain/"]
+
+RUN dotnet restore "Services/Benefits/Benefits.Api/Benefits.Api.csproj"
+COPY . .
+WORKDIR "/src/Services/Benefits/Benefits.Api"
+RUN dotnet build --no-restore "Benefits.Api.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:2.1
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["Services/Payers/Payers.Api/Payers.Api.csproj", "Services/Payers/Payers.Api/"]
+COPY ["Services/Payers/Payers.Domain/Payers.Domain.csproj", "Services/Payers/Payers.Domain/"]
+COPY ["Services/Payers/Payers.Infrastructure/Payers.Infrastructure.csproj", "Services/Payers/Payers.Infrastructure/"]
+COPY ["Services/Shared/Shared.Domain/Shared.Domain.csproj", "Services/Shared/Shared.Domain/"]
+
+RUN dotnet restore "Services/Payers/Payers.Api/Payers.Api.csproj"
+COPY . .
+WORKDIR "/src/Services/Payers/Payers.Api"
+RUN dotnet build --no-restore "Payers.Api.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

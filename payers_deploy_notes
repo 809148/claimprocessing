@@ -1,0 +1,148 @@
+For payers api
+1. Create docker file by following below steps
+	a. make sure application is running and all APIs are working
+	b. right click the project file and add docker support
+	c. build the docker image with below command in cmd.
+	
+		1. cd C:\src\CTOCDE.HC.ClaimsProcessing
+		2. docker build -f Services\Payers\Payers.Api\Dockerfile -t payersapi:v1 .
+			dockerfile:
+				FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+				WORKDIR /app
+				EXPOSE 80
+				EXPOSE 443
+
+				FROM microsoft/dotnet:2.1-sdk AS build
+				WORKDIR /src
+				COPY ["Services/Payers/Payers.Api/Payers.Api.csproj", "Services/Payers/Payers.Api/"]
+				COPY ["Services/Payers/Payers.Infrastructure/Payers.Infrastructure.csproj", "Services/Payers/Payers.Infrastructure/"]
+				COPY ["Services/Payers/Payers.Domain/Payers.Domain.csproj", "Services/Payers/Payers.Domain/"]
+				COPY ["Services/Shared/Shared.Domain/Shared.Domain.csproj", "Services/Shared/Shared.Domain/"]
+				RUN dotnet restore "Services/Payers/Payers.Api/Payers.Api.csproj"
+				COPY . .
+				WORKDIR "/src/Services/Payers/Payers.Api"
+				RUN dotnet build "Payers.Api.csproj" -c Release -o /app
+
+				FROM build AS publish
+				RUN dotnet publish "Payers.Api.csproj" -c Release -o /app
+
+				FROM base AS final
+				WORKDIR /app
+				COPY --from=publish /app .
+				ENTRYPOINT ["dotnet", "Payers.Api.dll"]
+			output:
+				Sending build context to Docker daemon  120.1MB
+				Step 1/20 : FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+				 ---> 190467cc5405
+				Step 2/20 : WORKDIR /app
+				 ---> Using cache
+				 ---> c0dc8b0ca220
+				Step 3/20 : EXPOSE 80
+				 ---> Running in 4095b1b74f3d
+				Removing intermediate container 4095b1b74f3d
+				 ---> 09f05035a98a
+				Step 4/20 : EXPOSE 443
+				 ---> Running in 67f462b5ed40
+				Removing intermediate container 67f462b5ed40
+				 ---> 6944be69a55d
+				Step 5/20 : FROM microsoft/dotnet:2.1-sdk AS build
+				2.1-sdk: Pulling from microsoft/dotnet
+				Digest: sha256:4a2660d1fb660a1cd02de12a70ccfe2cb7f236036123143bcadd0637817b52c9
+				Status: Downloaded newer image for microsoft/dotnet:2.1-sdk
+				 ---> 7eb1ecf4a018
+				Step 6/20 : WORKDIR /src
+				 ---> Running in 6a07c5953c85
+				Removing intermediate container 6a07c5953c85
+				 ---> 1b337119535c
+				Step 7/20 : COPY ["Services/Payers/Payers.Api/Payers.Api.csproj", "Services/Payers/Payers.Api/"]
+				 ---> 34e6a1ce77c4
+				Step 8/20 : COPY ["Services/Payers/Payers.Infrastructure/Payers.Infrastructure.csproj", "Services/Payers/Payers.Infrastructure/"]
+				 ---> 6e975d6bf2a0
+				Step 9/20 : COPY ["Services/Payers/Payers.Domain/Payers.Domain.csproj", "Services/Payers/Payers.Domain/"]
+				 ---> 95e3a1fd95bc
+				Step 10/20 : COPY ["Services/Shared/Shared.Domain/Shared.Domain.csproj", "Services/Shared/Shared.Domain/"]
+				 ---> 935ee9d9d608
+				Step 11/20 : RUN dotnet restore "Services/Payers/Payers.Api/Payers.Api.csproj"
+				 ---> Running in 50c3448c4535
+				  Restore completed in 2.19 sec for /src/Services/Payers/Payers.Domain/Payers.Domain.csproj.
+				  Restore completed in 3.95 sec for /src/Services/Payers/Payers.Infrastructure/Payers.Infrastructure.csproj.
+				  Restore completed in 13.81 ms for /src/Services/Shared/Shared.Domain/Shared.Domain.csproj.
+				  Restore completed in 8.82 sec for /src/Services/Payers/Payers.Api/Payers.Api.csproj.
+				Removing intermediate container 50c3448c4535
+				 ---> 1ec1fc0a1143
+				Step 12/20 : COPY . .
+				 ---> 591b35637bba
+				Step 13/20 : WORKDIR "/src/Services/Payers/Payers.Api"
+				 ---> Running in 1375ccfb7916
+				Removing intermediate container 1375ccfb7916
+				 ---> 445f5baef232
+				Step 14/20 : RUN dotnet build "Payers.Api.csproj" -c Release -o /app
+				 ---> Running in bf880388a9c9
+				Microsoft (R) Build Engine version 16.2.32702+c4012a063 for .NET Core
+				Copyright (C) Microsoft Corporation. All rights reserved.
+
+				  Restore completed in 435.7 ms for /src/Services/Payers/Payers.Domain/Payers.Domain.csproj.
+				  Restore completed in 439.3 ms for /src/Services/Payers/Payers.Infrastructure/Payers.Infrastructure.csproj.
+				  Restore completed in 29.94 ms for /src/Services/Shared/Shared.Domain/Shared.Domain.csproj.
+				  Restore completed in 1.62 sec for /src/Services/Payers/Payers.Api/Payers.Api.csproj.
+				  Shared.Domain -> /app/Shared.Domain.dll
+				  Payers.Domain -> /app/Payers.Domain.dll
+				  Payers.Infrastructure -> /app/Payers.Infrastructure.dll
+				  Payers.Api -> /app/Payers.Api.dll
+
+				Build succeeded.
+					0 Warning(s)
+					0 Error(s)
+
+				Time Elapsed 00:00:15.26
+				Removing intermediate container bf880388a9c9
+				 ---> c6616f91d84f
+				Step 15/20 : FROM build AS publish
+				 ---> c6616f91d84f
+				Step 16/20 : RUN dotnet publish "Payers.Api.csproj" -c Release -o /app
+				 ---> Running in d8cf994ac965
+				Microsoft (R) Build Engine version 16.2.32702+c4012a063 for .NET Core
+				Copyright (C) Microsoft Corporation. All rights reserved.
+
+				  Restore completed in 105.4 ms for /src/Services/Payers/Payers.Domain/Payers.Domain.csproj.
+				  Restore completed in 118.83 ms for /src/Services/Payers/Payers.Api/Payers.Api.csproj.
+				  Restore completed in 2.69 ms for /src/Services/Shared/Shared.Domain/Shared.Domain.csproj.
+				  Restore completed in 6.52 ms for /src/Services/Payers/Payers.Infrastructure/Payers.Infrastructure.csproj.
+				  Shared.Domain -> /src/Services/Shared/Shared.Domain/bin/Release/netstandard2.0/Shared.Domain.dll
+				  Payers.Domain -> /src/Services/Payers/Payers.Domain/bin/Release/netcoreapp2.1/Payers.Domain.dll
+				  Payers.Infrastructure -> /src/Services/Payers/Payers.Infrastructure/bin/Release/netcoreapp2.1/Payers.Infrastructure.dll
+				  Payers.Api -> /src/Services/Payers/Payers.Api/bin/Release/netcoreapp2.1/Payers.Api.dll
+				  Payers.Api -> /app/
+				Removing intermediate container d8cf994ac965
+				 ---> 33c795f3dcc3
+				Step 17/20 : FROM base AS final
+				 ---> 6944be69a55d
+				Step 18/20 : WORKDIR /app
+				 ---> Running in 4f138bb471f0
+				Removing intermediate container 4f138bb471f0
+				 ---> 022a13dd7faf
+				Step 19/20 : COPY --from=publish /app .
+				 ---> 0f6814f20c2c
+				Step 20/20 : ENTRYPOINT ["dotnet", "Payers.Api.dll"]
+				 ---> Running in 32999d916cd1
+				Removing intermediate container 32999d916cd1
+				 ---> e3da5f675ae4
+				Successfully built e3da5f675ae4
+				Successfully tagged payersapi:v1
+				SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
+		3. docker run -d -p 6001:80 payersapi:v1 
+		4. docker ps
+		5. http://localhost/api/payers
+		6. http://localhost/swagger
+		
+	d. deployment in azure app service
+		1. right click on api project and click on publish
+		2. select app service
+		3. chose azure dns name, resource group, plan and insights
+		4. click on continue or create
+		5. after successful validation, deployment will start
+		6. https://mypayers.azurewebsites.net/api/payers
+		
+		
+		
+		

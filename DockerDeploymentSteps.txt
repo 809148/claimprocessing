@@ -1,0 +1,46 @@
+Steps for Members api deployment:
+
+1. Implement member file as below
+	---doker file start
+	FROM mcr.microsoft.com/dotnet/core/sdk:2.1 AS build-env
+	WORKDIR /app
+
+	COPY /Services/Shared ./Services/Shared
+	COPY /Services/Members ./Services/Members
+	RUN dotnet publish Services/Members/Members.Api -c Release -o out
+
+	FROM mcr.microsoft.com/dotnet/core/aspnet:2.1
+	WORKDIR /app
+	COPY --from=build-env /app/Services/Members/Members.Api/out .
+
+
+	ENTRYPOINT ["dotnet", "Members.Api.dll"]
+	
+	---end docker file
+	
+2. Build docker image with below command
+
+	docker build -f Services\Members\Members.Api\Dockerfile -t membersapi:latest .
+	
+3. List images after successful image is built
+	
+	docker image ls
+	
+4. Make sure old container is running and remove it it already running
+	docker ps 
+	docke rm image_id
+	
+5. Run docker command to create container
+
+	docker run -d -p 80:80 membersapi:latest
+	
+6. Make sure docker container is created. 
+
+	docker ps
+	
+7. execute docker 
+
+	docker exec -it <image id> bash
+	
+8. Access the link using http://localhost/api/member
+	docker build -f Services\Benefits\Benefits.Api\Dockerfile -t benefitsapi:latest .
